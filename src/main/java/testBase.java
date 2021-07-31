@@ -1,7 +1,9 @@
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -19,10 +21,10 @@ class TestBase {
 
         // Implicit wait
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
-        // To open Aumni site
-        driver.get("https://www.aumni.fund/");
     }
+
+    @BeforeMethod
+    public void navigateHome() { driver.get("https://www.aumni.fund/"); }
 
     @AfterSuite
     public void quitDriver() {

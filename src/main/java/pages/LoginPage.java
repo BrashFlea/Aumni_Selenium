@@ -4,6 +4,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +32,15 @@ public class LoginPage {
     @FindBy(css = "div[class*='error-invalid-hint']")
     List<WebElement> loginErrors;
 
+    @FindBy(css = "input[type=\"email\"]")
+    WebElement passwordResetInput;
+
+    @FindBy(css = "button[aria-label='Send email'][type='submit']")
+    WebElement passwordResetSubmitButton;
+
+    @FindBy(css = "div[class*='auth0-global-message-success'] span")
+    WebElement passwordResetConfirmationMessage;
+
     public LoginPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
@@ -54,10 +65,22 @@ public class LoginPage {
         return this;
     }
 
-    public LoginPage clickResetPassword() {
+    public LoginPage clickPasswordResetLink() {
         passwordResetLink.click();
 
-        return this; //PasswordReset page
+        return this;
+    }
+
+    public LoginPage enterPasswordResetEmail(String email) {
+        passwordResetInput.sendKeys(email);
+
+        return this;
+    }
+
+    public LoginPage submitPasswordResetEmail() {
+        passwordResetSubmitButton.click();
+
+        return this;
     }
 
     // This is the login button on the login form
@@ -80,6 +103,13 @@ public class LoginPage {
         }
 
         return errors;
+    }
+
+    public String getPasswordResetMessage() {
+        // Try/catch to handle timeout and return an empty string
+        WebDriverWait wait = new WebDriverWait(this.driver, 5);
+        wait.until(ExpectedConditions.visibilityOf(passwordResetConfirmationMessage));
+        return passwordResetConfirmationMessage.getText();
     }
 
     public HomePage loginAs (String username, String password) {
